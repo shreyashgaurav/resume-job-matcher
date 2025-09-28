@@ -6,8 +6,10 @@ from typing import List
 import json
 import os
 
-from app.services.nlp_processor import EnhancedNLPProcessor
-from app.services.matcher import EnhancedJobMatcher
+# Use the original simpler classes since we removed heavy dependencies
+from app.services.resume_parser import ResumeParser
+from app.services.nlp_processor import NLPProcessor
+from app.services.matcher import JobMatcher
 
 app = FastAPI(title="Resume Job Matcher", version="1.0.0")
 
@@ -24,12 +26,10 @@ app.add_middleware(
 if os.path.exists("../frontend"):
     app.mount("/static", StaticFiles(directory="../frontend"), name="static")
 
-from app.services.resume_parser import ResumeParser
-
-# Initialize services
+# Initialize services with simpler classes
 resume_parser = ResumeParser()
-nlp_processor = EnhancedNLPProcessor()
-job_matcher = EnhancedJobMatcher(nlp_processor)
+nlp_processor = NLPProcessor()
+job_matcher = JobMatcher(nlp_processor)
 
 
 @app.get("/")
